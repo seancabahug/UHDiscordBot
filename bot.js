@@ -54,7 +54,6 @@ client.on('message', async message => {
         }
     } else if (message.attachments.size >= 1) {
         if (message.channel.type == 'dm') {
-            console.log(message.attachments.first().filename);
             if(message.attachments.first().name == "Cookies"){
                 if(!awaitingConfirmation.has(message.author.id)) {
                     var confirmationMsg = await message.channel.send({
@@ -107,18 +106,20 @@ client.on('messageReactionAdd', async (messageReaction, user) => {
             if (messageReaction.emoji.name == "✅"){
                 awaitingConfirmation.delete(user.id);
                 await messageReaction.message.channel.send("Confirmed, thank you! Downloading your `Cookies` file for processing...");
-                const fileStream = fs.createWriteStream(`./cache/${user.id}`)
+                const cookiesCache = `./cache/${user.id}`;
+                const fileStream = fs.createWriteStream(cookiesCache);
                 https.get(confirmationInformation.cookiesUrl, res => {
                     res.pipe(fileStream);
                     fileStream.on('finish', async () => {
                         fileStream.close();
                         await messageReaction.message.channel.send(`Finished! It is advisable to delete your \`Cookies\` file from this Discord DM.`);
-                        var cookiesDb = new sqlite3.Database(`./cache/${user.id}`);
+                        var cookiesDb = new sqlite3.Database(cookiesCache);
                         cookiesDb.get("SELECT value FROM cookies WHERE name='ESTSAUTHPERSISTENT'", (err, row) => {
                             if(!err) console.log(`estsauthpersistent: ${row.value}`);
                             else console.error(err);
                         });
                         cookiesDb.close();
+                        fs.unlinkSync(cookiesCache);
                     });
                 });
             } else if (messageReaction.emoji.name == "❌"){ 
