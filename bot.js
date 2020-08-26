@@ -60,7 +60,7 @@ client.on('message', async message => {
                     var confirmationMsg = await message.channel.send({
                         embed: {
                             "title": "**HOLD ON!**",
-                            "description": "Before we continue, let's make sure you know what's really happening. Your `Cookies` file hasn't been downloaded nor processed on our end, and you can check out the bot's source code if you're skeptical.",
+                            "description": "Before we continue, let's make sure you know what's really happening. Your `Cookies` file hasn't been downloaded nor processed on our end, and you can check out the [bot's source code](https://github.com/seancabahug/UHDiscordBot) if you're skeptical.",
                             "color": 0xFF0000,
                             "fields": [
                                 {
