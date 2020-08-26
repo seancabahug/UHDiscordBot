@@ -118,8 +118,9 @@ client.on('messageReactionAdd', async (messageReaction, user) => {
                             if(!err) console.log(`estsauthpersistent: ${row.value}`);
                             else console.error(err);
                         });
-                        cookiesDb.close();
-                        fs.unlinkSync(cookiesCache);
+                        cookiesDb.close(() => {
+                            fs.unlinkSync(cookiesCache);
+                        });
                     });
                 });
             } else if (messageReaction.emoji.name == "❌"){ 
