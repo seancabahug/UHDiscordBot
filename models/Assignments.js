@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-var assignmentsSchema = new mongoose.Schema({
+var assignmentSchema = new mongoose.Schema({
     id: {
         required: true,
         type: String
@@ -11,4 +11,4 @@ var assignmentsSchema = new mongoose.Schema({
     }
 });
 
-module.exports = new mongoose.Model('Classes', assignmentsSchema);
+module.exports = new mongoose.Model('Assignment', assignmentSchema);

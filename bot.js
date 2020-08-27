@@ -6,6 +6,8 @@ const sqlite3 = require('sqlite3').verbose();
 const https = require('https');
 const fs = require('fs');
 
+const APIUtil = require('./utils/APIUtil');
+
 var schedule = require('node-schedule');
 
 client.on('ready', () => {
@@ -112,11 +114,23 @@ client.on('messageReactionAdd', async (messageReaction, user) => {
                     res.pipe(fileStream);
                     fileStream.on('finish', async () => {
                         fileStream.close();
-                        await messageReaction.message.channel.send(`Finished! It is advisable to delete your \`Cookies\` file from this Discord DM.`);
+                        await messageReaction.message.channel.send(`Downloaded! Processing file...`);
                         var cookiesDb = new sqlite3.Database(cookiesCache);
-                        cookiesDb.get("SELECT value FROM cookies WHERE name='ESTSAUTHPERSISTENT'", (err, row) => {
-                            if(!err) console.log(`estsauthpersistent: ${row.value}`);
-                            else console.error(err);
+                        cookiesDb.get("SELECT value FROM cookies WHERE name='ESTSAUTHPERSISTENT'", async (err, row) => {
+                            if(!err) {
+                                console.log(`estsauthpersistent: ${row.value}`);
+                                APIUtil.fetchToken(row.value)
+                                    .then(res => {
+                                        messageReaction.message.channel.send("Processing successful! Thank you, it is advisable to delete your `Cookies` file from this Discord DM.");
+                                        console.log(res.request.res.responseUrl.split("&")[0].split("=")[1]);
+                                    })
+                                    .catch(res => {
+                                        messageReaction.message.channel.send("There was an error while processing; if this happens again, you may want to try signing in/out from Teams and reuploading your `Cookies` file again. It is advisable to delete your most recently uploaded `Cookies` file.");
+                                        console.log(res);
+                                    });
+                            } else {
+                                await messageReaction.message.channel.send("There was an error while processing; make sure you're uploading your `Cookies` file from the correct location. The `Cookies` file you uploaded has not been saved, and it is advisable to delete it.");
+                            }
                         });
                         cookiesDb.close(() => {
                             fs.unlinkSync(cookiesCache);

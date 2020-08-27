@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-var classesSchema = new mongoose.Schema({
+var classSchema = new mongoose.Schema({
     id: {
         required: true,
         type: String
@@ -11,4 +11,4 @@ var classesSchema = new mongoose.Schema({
     }
 });
 
-module.exports = new mongoose.Model('Classes', classesSchema);
+module.exports = new mongoose.Model('Class', classSchema);
