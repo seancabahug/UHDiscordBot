@@ -1,0 +1,68 @@
+LOGIN, GET TOKEN FROM COOKIES
+POST https://login.microsoftonline.com/common/login
+
+Required body (Form URL Encoded):
+	- login: (email)
+	- passwd: (password)
+	- ctx: (user context value(s?), supposedly from cookies. Might wanna check out the cookies from the "authorize" and "prelogin" endpoints)
+
+Alternatively,
+GET TOKEN FROM TEAMS COOKIES
+- Open a SQLite Browser, navigate to C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Teams\Cookies (yes it's a file, not a directory)
+- Browse data and look for "ESTSAUTHPERSISTENT"
+
+--
+
+GET TOKEN FOR /ME RELATED AUTHENTICATION
+GET https://login.microsoftonline.com/36f7beb6-5478-4b30-8d4c-04155d250604/oauth2/authorize?response_type=token&client_id=5e3ce6c0-2b1f-4285-8d4b-75ee78787346&resource=https%3A%2F%2Fchatsvcagg.teams.microsoft.com
+
+Required COOKIES:
+	- ESTSAUTHPERSISTENT (from Cookies file)
+
+Extra Notes:
+	- The account solely depends on the value of ESTEAUTHPERSISTENT
+
+--
+
+GET CLASS INFORMATION (including ID for assignment fetching)
+GET https://teams.microsoft.com/api/csa/api/v1/teams/users/me?isPrefetch=false&enableMembershipSummary=true
+
+Required headers:
+	- Authorization: Bearer (token for /me related authentication)
+
+--
+
+GET ASSIGNMENTS OF CLASS (only class ID, assignment name, due date time)
+GET https://assignments.onenote.com/api/v1.0/edu/classes/(INSERT CLASS ID
+HERE)/assignments?$select=classId,displayName,dueDateTime&$filter=status%20eq%20microsoft.education.assignments.api.educationAssignmentStatus'assigned'%20and%20dueDateTime%20ge%20(INSERT
+CURRENT TIMESTAMP HERE)&$top=20&$orderby=dueDateTime%20asc
+Required headers:
+	- Authorization: Bearer (token for /me related authentication)
+
+Description of required URL values:
+	- Class ID: The class to fetch assignments from
+	- Current timestamp: The current date/time in ISO 8601 format
+	  (example: 2020-08-24T21:38:38.547Z)
+
+--
+
+PROPERTIES YOU CAN EXTRACT FROM TOKEN PAYLOAD
+- oid: Unique User ID
+- given_name: First name
+- family_name: Last name
+
+--
+
+Authorization Notes:
+LEADS FOR COOKIES FILE: "authtoken", "skypetoken_asm", and "SSOAUTHCOOKIE"
+	- "SSOAUTHCOOKIE" will not appear during first run of Teams after a
+	  fresh installation, Teams must at least be run a second time
+
+Generates tokens for EVERY Microsoft service it needs (using login.microsoftonline.com/.../authorize, specifying service from the "resource" query parameter), e.g.:
+	- Skype (api.spaces.skype.com)
+	- Teams Chat Service Aggregator "chatsvcagg"
+	  (chatsvcagg.teams.microsoft.com) (which allows for /me related authentication)
+	- Teams Presence (presence.teams.microsoft.com)
+	- Microsoft Stream (*.microsoftstream.com)
+	- Outlook Office365 (outlook.office365.com)
+	- Outlook Office (outlook.office.com)

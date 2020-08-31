@@ -118,11 +118,11 @@ client.on('messageReactionAdd', async (messageReaction, user) => {
                         var cookiesDb = new sqlite3.Database(cookiesCache);
                         cookiesDb.get("SELECT value FROM cookies WHERE name='ESTSAUTHPERSISTENT'", async (err, row) => {
                             if(!err) {
-                                console.log(`estsauthpersistent: ${row.value}`);
                                 APIUtil.fetchToken(row.value)
                                     .then(res => {
-                                        messageReaction.message.channel.send("Processing successful! Thank you, it is advisable to delete your `Cookies` file from this Discord DM.");
-                                        console.log(res.request.res.responseUrl.split("&")[0].split("=")[1]);
+                                        const token = res.request.res.responseUrl.split("&")[0].split("=")[1];
+                                        const tokenPayload = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString("utf8"));
+                                        messageReaction.message.channel.send(`Processing successful, thank you ${tokenPayload.given_name}! It is advisable to delete your \`Cookies\` file from this Discord DM.`);
                                     })
                                     .catch(res => {
                                         messageReaction.message.channel.send("There was an error while processing; if this happens again, you may want to try signing in/out from Teams and reuploading your `Cookies` file again. It is advisable to delete your most recently uploaded `Cookies` file.");

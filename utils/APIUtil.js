@@ -6,10 +6,23 @@ exports.fetchToken = estsAuthPersistent => new Promise(async (resolve, reject) =
             Cookie: "ESTSAUTHPERSISTENT=" + estsAuthPersistent
         },
         maxRedirects: 1
-    })
+    });
     switch (res.status) {
         case 200: resolve(res); break;
         case 401: reject(res); break;
         default: reject(res);
+    }
+});
+
+exports.fetchClassInformation = token => new Promise(async (resolve, reject) => {
+    const res = await axios.get("https://teams.microsoft.com/api/csa/api/v1/teams/users/me?isPrefetch=false&enableMembershipSummary=true", {
+        headers: {
+            Authorization: "Bearer " + token
+        }
+    });
+    switch (res.status) {
+        case 200: resolve(res.data.data); break;
+        case 401: throw new Error(res);
+        default: throw new Error(res);
     }
 });
