@@ -9,7 +9,7 @@ Required body (Form URL Encoded):
 Alternatively,
 GET TOKEN FROM TEAMS COOKIES
 - Open a SQLite Browser, navigate to C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Teams\Cookies (yes it's a file, not a directory)
-- Go to "Browse Data" and look for the tokens
+- Browse data and look for "ESTSAUTHPERSISTENT"
 
 --
 
