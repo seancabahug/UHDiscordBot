@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 var accountSchema = new mongoose.Schema({
+    discordId: {
+        required: true,
+        type: String
+    },
     firstName: {
         required: true,
         type: String

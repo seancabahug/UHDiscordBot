@@ -8,7 +8,10 @@ exports.fetchToken = estsAuthPersistent => new Promise(async (resolve, reject) =
         maxRedirects: 1
     });
     switch (res.status) {
-        case 200: resolve(res); break;
+        case 200:
+            var token = res.request.res.responseUrl.split("&")[0].split("=")[1];
+            resolve(token);
+            break;
         case 401: reject(res); break;
         default: reject(res);
     }

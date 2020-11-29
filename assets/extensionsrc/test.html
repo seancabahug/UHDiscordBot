@@ -1,0 +1,15 @@
+<html style="height: 250px; width: 250px;">
+    <body>
+        <div id="success">
+            <p>Click on the button to automatically copy the data, then go back to Discord, paste it as a message to the UH bot, and send.</p>
+            <button id="copyb">Click me to copy!</button>
+            <p>Alternatively, if the button is greyed-out/unclickable or doesn't seem to be copying anything, select everything in this textbox and copy it using Ctrl+C:</p>
+            <textarea id="cook" readonly></textarea> <br />
+            <b>Once the UH bot gives you the thumbs-up, you may safely remove this extension from Chrome.</b>
+        </div>
+        <div id="fail" style="display: none;">
+            <p>Something went wrong! Please ensure that you're signed into Microsoft Office with your school account and click on this extension again.</p>
+        </div>
+        <script src="popup.js"></script>
+    </body>
+</html>
